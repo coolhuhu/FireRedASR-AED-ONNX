@@ -50,7 +50,9 @@ def read_kaldi_cmvn(kaldi_cmvn_file):
     return means, inverse_std_variences
 
 
-def add_meta_data(filename: str, meta_data: Dict[str, Any]):
+def add_meta_data(filename: str, 
+                  meta_data: Dict[str, Any],
+                  save_as_external_data=False):
     """Add meta data to an ONNX model. It is changed in-place.
 
     Args:
@@ -69,7 +71,7 @@ def add_meta_data(filename: str, meta_data: Dict[str, Any]):
         meta.key = key
         meta.value = str(value)
 
-    onnx.save(model, filename)
+    onnx.save(model, filename, save_as_external_data=save_as_external_data)
 
 
 def export_encoder(fireredasr_model, args, model_args):
@@ -184,7 +186,7 @@ def export_encoder(fireredasr_model, args, model_args):
         "cmvn_inv_stddev": ','.join(cmvn_inv_stddev)
     }
     
-    add_meta_data(onnx_encoder_file, encoder_meta_data)
+    add_meta_data(onnx_encoder_file, encoder_meta_data, True)
     add_meta_data(onnx_encoder_int8_file, encoder_meta_data)
     
     return n_layer_cross_k, n_layer_cross_v, cross_attn_mask
